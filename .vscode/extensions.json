@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-toolsai.jupyter",
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one",
+        "eamodio.gitlens",
+        "visualstudioexptteam.vscodeintellicode",
+        "github.copilot"
+    ]
+}
