@@ -1,0 +1,174 @@
+PID Controllers
+
+Introduction
+PID (Proportional-Integral-Derivative) controllers are the most widely used control algorithm in industrial applications. They provide a practical and effective method for controlling processes where precise control is required.
+
+PID Controller Components
+
+1. Proportional (P) Control
+The proportional term produces an output that is proportional to the current error value.
+
+Mathematical Expression: P = Kp × e(t)
+
+Where:
+- Kp is the proportional gain
+- e(t) is the error at time t
+
+Characteristics:
+- Provides immediate response to error
+- Cannot eliminate steady-state error
+- Higher Kp increases response speed but may cause instability
+- Simple to implement
+
+2. Integral (I) Control
+The integral term is proportional to both the magnitude and duration of the error.
+
+Mathematical Expression: I = Ki × ∫e(t)dt
+
+Where:
+- Ki is the integral gain
+- ∫e(t)dt is the accumulated error over time
+
+Characteristics:
+- Eliminates steady-state error
+- Responds to accumulated past errors
+- Can cause overshooting and oscillations if Ki is too large
+- Slower response compared to P control
+
+3. Derivative (D) Control
+The derivative term predicts future error based on its rate of change.
+
+Mathematical Expression: D = Kd × de(t)/dt
+
+Where:
+- Kd is the derivative gain
+- de(t)/dt is the rate of change of error
+
+Characteristics:
+- Improves system stability
+- Reduces overshoot
+- Sensitive to noise
+- Cannot be used alone (must be combined with P or PI)
+- Provides anticipatory control action
+
+Complete PID Control Equation
+
+The complete PID controller output is:
+
+u(t) = Kp × e(t) + Ki × ∫e(t)dt + Kd × de(t)/dt
+
+Or in terms of a single proportional gain Kp:
+
+u(t) = Kp × [e(t) + (1/Ti) × ∫e(t)dt + Td × de(t)/dt]
+
+Where:
+- Ti is the integral time constant
+- Td is the derivative time constant
+
+Transfer Function
+The transfer function of a PID controller in the Laplace domain:
+
+G(s) = Kp + Ki/s + Kd×s
+
+Or:
+
+G(s) = Kp × (1 + 1/(Ti×s) + Td×s)
+
+PID Tuning Methods
+
+1. Ziegler-Nichols Method
+A popular heuristic tuning method:
+
+Step 1: Set Ki and Kd to zero
+Step 2: Increase Kp until sustained oscillation occurs (ultimate gain Ku)
+Step 3: Measure the oscillation period (Tu)
+Step 4: Calculate PID parameters:
+
+For P Controller:
+Kp = 0.5 × Ku
+
+For PI Controller:
+Kp = 0.45 × Ku
+Ti = Tu / 1.2
+
+For PID Controller:
+Kp = 0.6 × Ku
+Ti = Tu / 2
+Td = Tu / 8
+
+2. Cohen-Coon Method
+Based on open-loop step response characteristics:
+- Requires determining process parameters: gain, time constant, and dead time
+- Provides good disturbance rejection
+- More complex than Ziegler-Nichols
+
+3. Manual Tuning
+Step-by-step approach:
+
+Step 1: Set Ki and Kd to zero, adjust Kp until acceptable response
+Step 2: Increase Ki to eliminate steady-state error
+Step 3: Increase Kd to reduce overshoot and improve stability
+Step 4: Fine-tune all parameters iteratively
+
+Practical Considerations
+
+1. Anti-Windup
+Integral windup occurs when the controller output saturates but the integral term continues to accumulate. Solutions:
+- Conditional integration (stop integrating when output saturates)
+- Back-calculation
+- Clamping
+
+2. Derivative Kick
+Sudden changes in setpoint can cause large spikes in derivative term. Solutions:
+- Apply derivative to measured output instead of error
+- Derivative on measurement (instead of error)
+
+3. Sampling Rate
+For digital implementation:
+- Sample at least 10 times faster than system dynamics
+- Use appropriate numerical integration/differentiation methods
+
+4. Filtering
+Add low-pass filter to derivative term to reduce noise sensitivity:
+
+D = Kd × s / (1 + τ×s) × E(s)
+
+Where τ is the filter time constant
+
+Applications of PID Controllers
+
+Industrial Applications:
+- Temperature control in furnaces and reactors
+- Pressure control in pipelines
+- Flow control in chemical processes
+- Level control in tanks
+- Speed control of motors
+
+Advantages:
+- Simple structure and easy to implement
+- Applicable to most control problems
+- Well-understood behavior
+- Robust performance
+
+Disadvantages:
+- Requires tuning for optimal performance
+- May not work well for systems with large dead times
+- Limited effectiveness for highly nonlinear systems
+- Derivative term sensitive to noise
+
+Variations of PID Controllers
+
+1. PI Controller
+Used when derivative action is not needed or noise is problematic.
+
+2. PD Controller
+Used when integral action causes excessive overshoot.
+
+3. Cascaded PID
+Multiple PID controllers in series for complex processes.
+
+4. Fuzzy PID
+Combines fuzzy logic with PID for nonlinear systems.
+
+5. Adaptive PID
+Automatically adjusts gains based on process changes.
