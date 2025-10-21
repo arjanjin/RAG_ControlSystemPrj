@@ -1,0 +1,72 @@
+ทฤษฎีการควบคุมขั้นสูง
+
+1. การวิเคราะห์เสถียรภาพ
+   - เกณฑ์ Routh-Hurwitz
+     * ใช้ตรวจสอบว่าขั้วทั้งหมดอยู่ในครึ่งซ้ายของ s-plane หรือไม่
+     * สร้าง Routh Array จาก Characteristic Equation
+     * ถ้าคอลัมน์แรกเปลี่ยนเครื่องหมาย แสดงว่ามีขั้วอยู่ในครึ่งขวา (ไม่เสถียร)
+
+   - Nyquist Criterion
+     * วิเคราะห์เสถียรภาพในโดเมนความถี่
+     * ใช้ Nyquist Plot
+     * นับจำนวนรอบที่โอบจุด -1+j0
+
+   - Bode Plot
+     * Gain Margin และ Phase Margin
+     * Gain Margin > 0 dB และ Phase Margin > 0° = เสถียร
+     * ค่าที่เหมาะสม: GM > 6 dB, PM > 30°
+
+2. Root Locus
+   - แสดงตำแหน่งของขั้วเมื่อ gain K เปลี่ยนแปลง
+   - กฎการวาด Root Locus:
+     * เริ่มต้นที่ขั้วแบบวงเปิด (K=0)
+     * สิ้นสุดที่จุดศูนย์แบบวงเปิด (K=∞)
+     * จำนวนแขน = max(จำนวนขั้ว, จำนวนศูนย์)
+     * สมมาตรผ่านแกน real
+
+3. State Space Analysis
+   - การแทนระบบด้วย state variables
+   - ข้อดี:
+     * วิเคราะห์ระบบ MIMO ได้
+     * เหมาะสำหรับการจำลองด้วยคอมพิวเตอร์
+     * สามารถออกแบบ controller ขั้นสูงได้
+
+   - Controllability และ Observability
+     * Controllability: สามารถควบคุม state ทั้งหมดได้หรือไม่
+     * Observability: สามารถสังเกต state ทั้งหมดได้จาก output หรือไม่
+
+4. การออกแบบ Controller
+   - Pole Placement
+     * กำหนดตำแหน่งขั้วที่ต้องการ
+     * คำนวณ gain matrix K
+
+   - LQR (Linear Quadratic Regulator)
+     * Optimal control
+     * Minimize cost function: J = ∫(x'Qx + u'Ru)dt
+
+   - Observer Design
+     * Luenberger Observer
+     * Kalman Filter (สำหรับระบบที่มี noise)
+
+5. การชดเชยแบบต่างๆ
+   - Lead Compensator
+     * ปรับปรุง transient response
+     * เพิ่ม phase margin
+
+   - Lag Compensator
+     * ลด steady-state error
+     * ปรับปรุง steady-state accuracy
+
+   - Lead-Lag Compensator
+     * รวมข้อดีของทั้งสอง
+
+6. Frequency Response
+   - Bandwidth: ช่วงความถี่ที่ระบบทำงานได้ดี
+   - Resonance Peak: จุดสูงสุดของ magnitude
+   - Cutoff Frequency: ความถี่ที่ magnitude ลดลง -3dB
+
+7. Nonlinear Control
+   - Phase Plane Analysis
+   - Describing Function
+   - Lyapunov Stability Theory
+   - Sliding Mode Control

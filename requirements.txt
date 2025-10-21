@@ -1,0 +1,38 @@
+# Core RAG Dependencies
+langchain==0.1.0
+langchain-community==0.0.13
+chromadb==0.4.22
+sentence-transformers==2.3.1
+
+# LLM Integration
+openai==1.10.0
+ollama==0.1.6
+
+# Document Processing
+pypdf==4.0.1
+python-docx==1.1.0
+openpyxl==3.1.2
+unstructured==0.12.0
+
+# Vector Store & Embeddings
+faiss-cpu==1.7.4
+tiktoken==0.5.2
+
+# Utilities
+python-dotenv==1.0.0
+pydantic==2.5.3
+pyyaml==6.0.1
+
+# Thai Language Support
+pythainlp==4.0.2
+attacut==1.1.0
+
+# API & Web Interface (Optional)
+fastapi==0.109.0
+uvicorn==0.27.0
+streamlit==1.30.0
+
+# Development
+pytest==7.4.4
+black==24.1.0
+pylint==3.0.3
