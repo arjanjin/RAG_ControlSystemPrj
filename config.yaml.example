@@ -1,0 +1,68 @@
+# RAG Control System Configuration
+
+# GPU Configuration
+gpu:
+  # Device to use: 'cuda', 'cpu', or 'auto' for automatic detection
+  device: auto
+  
+  # GPU device ID (if multiple GPUs available)
+  gpu_id: 0
+  
+  # Fraction of GPU memory to use (0.0 to 1.0)
+  memory_fraction: 0.8
+  
+  # Enable mixed precision training (FP16)
+  mixed_precision: true
+
+# Embedding Model Configuration
+embedding:
+  # Model name from HuggingFace
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  
+  # Alternative models for better performance (require more GPU memory):
+  # model_name: "sentence-transformers/all-mpnet-base-v2"
+  # model_name: "sentence-transformers/multi-qa-mpnet-base-dot-v1"
+  
+  # Batch size for embedding generation
+  batch_size: 32
+  
+  # Maximum sequence length
+  max_seq_length: 512
+
+# Vector Store Configuration
+vector_store:
+  # Type of vector store: 'faiss', 'chromadb', 'pinecone'
+  type: faiss
+  
+  # Index type for FAISS
+  index_type: "Flat"  # Options: "Flat", "IVF", "HNSW"
+  
+  # Number of clusters for IVF index
+  n_clusters: 100
+
+# RAG Configuration
+rag:
+  # Number of documents to retrieve
+  top_k: 5
+  
+  # Minimum similarity score threshold
+  score_threshold: 0.5
+  
+  # Enable query expansion
+  query_expansion: false
+
+# API Configuration
+api:
+  # Host address
+  host: "0.0.0.0"
+  
+  # Port number
+  port: 8000
+  
+  # Enable API documentation
+  docs_enabled: true
+
+# Logging Configuration
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
