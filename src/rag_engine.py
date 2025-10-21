@@ -12,9 +12,18 @@ from langchain.prompts import PromptTemplate
 from langchain_community.llms import Ollama
 from langchain.chains import LLMChain
 
-import config
-from src.vector_store import VectorStoreManager
-from src.document_loader import DocumentLoader
+# Handle imports for both module and standalone usage
+try:
+    import config
+    from src.vector_store import VectorStoreManager
+    from src.document_loader import DocumentLoader
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    import config
+    from src.vector_store import VectorStoreManager
+    from src.document_loader import DocumentLoader
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -129,12 +138,18 @@ class RAGEngine:
 
         # สร้าง prompt
         prompt = f"""
+คุณเป็นผู้เชี่ยวชาญด้านระบบควบคุม (Control System) และต้องตอบเป็นภาษาไทยเท่านั้น
+
 คำถาม: {question}
 
 ข้อมูลที่เกี่ยวข้อง:
 {context}
 
-กรุณาตอบคำถามโดยอ้างอิงจากข้อมูลที่ให้มา หากไม่พบข้อมูลที่เกี่ยวข้อง ให้บอกว่าไม่มีข้อมูล
+คำแนะนำ:
+- ตอบคำถามโดยอ้างอิงจากข้อมูลที่ให้มา
+- หากไม่พบข้อมูลที่เกี่ยวข้อง ให้บอกว่าไม่มีข้อมูล
+- ตอบเป็นภาษาไทยเท่านั้น
+- ให้คำตอบที่ชัดเจนและถูกต้อง
 
 คำตอบ:
 """
@@ -214,3 +229,44 @@ def create_rag_engine() -> RAGEngine:
     engine = RAGEngine()
     engine.load_knowledge_base()
     return engine
+
+
+def main():
+    """Test function for standalone usage"""
+    print("🧪 Testing RAG Engine...")
+    
+    try:
+        # Test 1: Initialize RAG engine
+        vector_store = VectorStoreManager()
+        rag_engine = RAGEngine(vector_store_manager=vector_store)
+        print("✓ RAG engine initialized")
+        
+        # Test 2: Test status
+        status = rag_engine.get_status()
+        print(f"✓ LLM Provider: {status['llm_provider']}")
+        print(f"✓ Vector Store: {status['vector_store']['name']}")
+        
+        # Test 3: Test query
+        test_questions = [
+            "ระบบควบคุมแบบวงเปิดคืออะไร",
+            "PID Controller ประกอบด้วยอะไรบ้าง",
+            "Transfer Function คืออะไร"
+        ]
+        
+        print("\n--- Testing Queries ---")
+        for i, question in enumerate(test_questions, 1):
+            print(f"\nTest {i}: {question}")
+            result = rag_engine.query(question)
+            print(f"✓ Answer: {result['answer'][:100]}...")
+            print(f"✓ Sources: {result['num_sources']}")
+        
+        print("\n✅ RAG Engine Tests Completed!")
+        
+    except Exception as e:
+        print(f"❌ Error in RAG engine test: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()

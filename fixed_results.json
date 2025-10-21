@@ -1,0 +1,61 @@
+{
+  "results": [
+    {
+      "score": 80,
+      "is_correct": false,
+      "feedback": "คำตอบของนักศึกษามีบางส่วนถูกต้อง แต่ไม่ได้อธิบายความแตกต่างระหว่างระบบควบคุมแบบวงเปิดและวงปิดอย่างละเอียด",
+      "key_points_covered": [
+        "ระบบวงเปิดนไม่มีการป้อนกลับ"
+      ],
+      "missing_points": [
+        "ระบบวงปิดมีการป้อนกลับคือ output ถูกนำกลับมาเปรียบเทียบกับ input",
+        "ระบบวงปิดมีความแม่นยำสูงกว่าแต่มีความซับซ้อนและราคาแพงกว่า"
+      ],
+      "question": "อธิบายความแตกต่างระหว่างระบบควบคุมแบบวงเปิดและวงปิด",
+      "student_answer": "ระบบวงเปิดไม่มี feedback แต่ระบบวงปิดมี feedback ทำให้สามารถแก้ไขข้อผิดพลาดได้",
+      "correct_answer": "ระบบควบคุมแบบวงเปิดไม่มีการป้อนกลับ output ไม่มีผลต่อ input และไม่สามารถแก้ไขความผิดพลาดได้อัตโนมัติ ในขณะที่ระบบควบคุมแบบวงปิดมีการป้อนกลับ output ถูกนำกลับมาเปรียบเทียบกับ input และสามารถแก้ไขความผิดพลาดได้อัตโนมัติ ระบบวงปิดมีความแม่นยำสูงกว่าแต่มีความซับซ้อนและราคาแพงกว่า",
+      "question_number": 1
+    },
+    {
+      "score": 80,
+      "is_correct": false,
+      "feedback": "คำตอบของผู้เรียนเป็นส่วนใหญ่ถูกต้อง แต่ไม่ครอบคลุมทุกองค์ประกอบของ PID Controller สำหรับ I ควรระบุว่าเป็น integral control ที่ขจัด steady-state error และ D ควรระบุว่าเป็น derivative control ที่ปรับปรุง transient response",
+      "key_points_covered": [
+        "P ทำหน้าที่ควบคุมตามสัดส่วนของ error"
+      ],
+      "missing_points": [
+        "I ทำหน้าที่ขจัด steady-state error",
+        "D ทำหน้าที่ปรับปรุง transient response"
+      ],
+      "question": "PID Controller ประกอบด้วยส่วนใดบ้าง และแต่ละส่วนมีหน้าที่อะไร",
+      "student_answer": "P คือ Proportional, I คือ Integral, D คือ Derivative โดย P ควบคุมตาม error, I ลด steady-state error, D ปรับปรุง transient response",
+      "correct_answer": "PID Controller ประกอบด้วย 3 ส่วน คือ P (Proportional) ทำหน้าที่ควบคุมตามสัดส่วนของ error, I (Integral) ทำหน้าที่ขจัดความคลาดเคลื่อนในสถานะคงตัว (Steady-State Error), และ D (Derivative) ทำหน้าที่ปรับปรุงการตอบสนองชั่วครู่ (Transient Response)",
+      "question_number": 2
+    },
+    {
+      "score": 60,
+      "is_correct": false,
+      "feedback": "คำตอบของนักศึกษาใกล้เคียง แต่ยังไม่สมบูรณ์เท่าที่ควรจะเป็น ฟังก์ชันถ่ายโอน (Transfer Function) คือ G(s) = Y(s) / X(s) ซึ่งแสดงความสัมพันธ์ระหว่าง Input และ Output ในโดเมน s โดยใช้ Laplace Transform เพื่อวิเคราะห์พฤติกรรมของระบบ นักศึกษาควรจะอธิบายรายละเอียดมากกว่านี้",
+      "key_points_covered": [
+        "คุณตอบถูกเรื่องความสัมพันธ์ระหว่าง Input และ Output ในโดเมน s"
+      ],
+      "missing_points": [
+        "คุณไม่ได้อธิบายรายละเอียดเกี่ยวกับ Laplace Transform และวิธีวิเคราะห์พฤติกรรมของระบบ"
+      ],
+      "question": "ฟังก์ชันถ่ายโอน (Transfer Function) คืออะไร",
+      "student_answer": "คือความสัมพันธ์ระหว่าง input กับ output",
+      "correct_answer": "ฟังก์ชันถ่ายโอน (Transfer Function) คือ G(s) = Y(s) / X(s) ซึ่งแสดงความสัมพันธ์ระหว่าง Input และ Output ในโดเมน s โดยใช้ Laplace Transform เพื่อวิเคราะห์พฤติกรรมของระบบ",
+      "question_number": 3
+    }
+  ],
+  "total_score": 220,
+  "max_score": 300,
+  "percentage": 73.33,
+  "num_questions": 3,
+  "summary": {
+    "num_correct": 0,
+    "num_incorrect": 3,
+    "average_score": 73.33,
+    "pass": true
+  }
+}

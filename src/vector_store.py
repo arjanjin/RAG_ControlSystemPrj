@@ -12,7 +12,14 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 import chromadb
 
-import config
+# Handle imports for both module and standalone usage
+try:
+    import config
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    import config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,6 +62,12 @@ class VectorStoreManager:
 
         # สร้าง/โหลด vector store
         self.vector_store = None
+        
+        # Disable ChromaDB telemetry to avoid errors
+        import os
+        os.environ["ANONYMIZED_TELEMETRY"] = "False"
+        os.environ["CHROMA_TELEMETRY"] = "False"
+        
         self._load_or_create_vector_store()
 
     def _load_or_create_vector_store(self):
@@ -224,3 +237,46 @@ def create_vector_store_from_documents(documents: List[Document]) -> VectorStore
     manager = VectorStoreManager()
     manager.add_documents(documents)
     return manager
+
+
+def main():
+    """Test function for standalone usage"""
+    print("🧪 Testing Vector Store...")
+    
+    try:
+        # Test 1: Initialize vector store
+        vector_store = VectorStoreManager()
+        print("✓ Vector store initialized")
+        
+        # Test 2: Check collection info
+        info = vector_store.get_collection_info()
+        print(f"✓ Collection: {info.get('name', 'N/A')}")
+        print(f"✓ Document count: {info.get('count', 0)}")
+        
+        # Test 3: Test similarity search
+        if info.get('count', 0) > 0:
+            print("\n--- Testing Similarity Search ---")
+            test_queries = [
+                "ระบบควบคุมแบบวงเปิด",
+                "PID Controller",
+                "Transfer Function"
+            ]
+            
+            for query in test_queries:
+                results = vector_store.similarity_search(query, k=3)
+                print(f"✓ Query '{query}': Found {len(results)} results")
+                if results:
+                    print(f"  Sample: {results[0].page_content[:50]}...")
+        else:
+            print("⚠️ No documents in vector store for testing search")
+        
+        print("\n✅ Vector Store Tests Completed!")
+        
+    except Exception as e:
+        print(f"❌ Error in vector store test: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()

@@ -16,7 +16,14 @@ from langchain_community.document_loaders import (
 )
 from langchain.schema import Document
 
-import config
+# Handle imports for both module and standalone usage
+try:
+    import config
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    import config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -164,3 +171,30 @@ def load_knowledge_base() -> List[Document]:
     loader = DocumentLoader()
     documents = loader.load_directory(str(config.KNOWLEDGE_BASE_DIR))
     return documents
+
+
+def main():
+    """Test function for standalone usage"""
+    print("🧪 Testing Document Loader...")
+    
+    # Test 1: Initialize document loader
+    loader = DocumentLoader()
+    print("✓ Document loader initialized")
+    
+    # Test 2: Load knowledge base
+    print(f"Loading documents from: {config.KNOWLEDGE_BASE_DIR}")
+    documents = load_knowledge_base()
+    print(f"✓ Loaded {len(documents)} document chunks")
+    
+    # Test 3: Show sample documents
+    if documents:
+        print("\nSample documents:")
+        for i, doc in enumerate(documents[:3]):
+            print(f"  Document {i+1}: {doc.page_content[:100]}...")
+            print(f"    Metadata: {doc.metadata}")
+    
+    print("✅ Document Loader Tests Completed!")
+
+
+if __name__ == "__main__":
+    main()

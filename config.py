@@ -17,7 +17,7 @@ VECTOR_DB_DIR = DATA_DIR / "vector_db"
 # ใช้ OpenAI หรือ Local LLM (เช่น Ollama)
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # "openai" or "ollama"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama2")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3:latest")  # Changed to llama3 for better Thai support
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 # การตั้งค่า Embeddings
@@ -35,7 +35,7 @@ TOP_K_RESULTS = 5
 
 # Template สำหรับ Prompt
 GRADING_PROMPT_TEMPLATE = """
-คุณเป็นผู้เชี่ยวชาญด้านระบบควบคุม (Control System)
+คุณเป็นผู้เชี่ยวชาญด้านระบบควบคุม (Control System) และจะตอบเป็นภาษาไทยเท่านั้น
 
 จากความรู้ที่เกี่ยวข้อง:
 {context}
@@ -50,14 +50,14 @@ GRADING_PROMPT_TEMPLATE = """
 1. วิเคราะห์ความถูกต้องของคำตอบ
 2. เปรียบเทียบกับเฉลยและความรู้ที่เกี่ยวข้อง
 3. ให้คะแนนเป็นเปอร์เซ็นต์ (0-100)
-4. ให้คำอธิบาย feedback แนะนำ
+4. ให้คำอธิบายและข้อเสนอแนะเป็นภาษาไทย
 
-ตอบกลับในรูปแบบ JSON:
+สำคัญ: ตอบเป็น JSON เท่านั้น ไม่ต้องมีข้อความอื่น:
 {{
-  "score": <คะแนน 0-100>,
-  "is_correct": <true/false>,
-  "feedback": "<คำอธิบายและข้อเสนอแนะ>",
-  "key_points_covered": ["<จุดสำคัญที่ตอบถูก>"],
-  "missing_points": ["<จุดที่ขาดหายไป>"]
+  "score": คะแนนเป็นตัวเลข 0-100,
+  "is_correct": true หรือ false,
+  "feedback": "คำอธิบายและข้อเสนอแนะเป็นภาษาไทย",
+  "key_points_covered": ["จุดสำคัญที่ตอบถูก"],
+  "missing_points": ["จุดที่ขาดหายไป"]
 }}
 """

@@ -7,8 +7,16 @@ from typing import Dict, List, Any, Optional
 import logging
 import json
 
-import config
-from src.rag_engine import RAGEngine
+# Handle imports for both module and standalone usage
+try:
+    import config
+    from src.rag_engine import RAGEngine
+except ImportError:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    import config
+    from src.rag_engine import RAGEngine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -100,35 +108,81 @@ class ExamGrader:
             # ลบ code blocks ถ้ามี
             response = response.strip()
             if response.startswith('```'):
-                response = response.split('```')[1]
-                if response.startswith('json'):
-                    response = response[4:]
+                lines = response.split('\n')
+                json_start = -1
+                json_end = -1
+                
+                for i, line in enumerate(lines):
+                    if line.strip().startswith('{'):
+                        json_start = i
+                    if line.strip().endswith('}') and json_start != -1:
+                        json_end = i
+                        break
+                
+                if json_start != -1 and json_end != -1:
+                    response = '\n'.join(lines[json_start:json_end+1])
+            
+            # หา JSON object ในข้อความ
+            import re
+            json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', response, re.DOTALL)
+            if json_match:
+                response = json_match.group(0)
 
             result = json.loads(response)
 
             # ปรับคะแนนให้เป็น scale ที่ต้องการ
             if 'score' in result:
-                result['score'] = min(max_score, int(result['score'] * max_score / 100))
+                score = result['score']
+                if score > max_score:
+                    result['score'] = max_score
+                else:
+                    result['score'] = int(score)
+
+            # ตรวจสอบว่ามีฟิลด์ที่จำเป็นครบหรือไม่
+            required_fields = ['score', 'is_correct', 'feedback', 'key_points_covered', 'missing_points']
+            for field in required_fields:
+                if field not in result:
+                    if field == 'score':
+                        result[field] = 0
+                    elif field == 'is_correct':
+                        result[field] = False
+                    elif field == 'feedback':
+                        result[field] = "ไม่สามารถวิเคราะห์คำตอบได้"
+                    else:
+                        result[field] = []
 
             return result
 
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, Exception) as e:
             # ถ้า parse ไม่ได้ ให้แยกข้อมูลจาก text
-            logger.warning("Could not parse JSON, using fallback parsing")
+            logger.warning(f"Could not parse JSON: {e}, using fallback parsing")
 
             score = 0
             is_correct = False
             feedback = response
 
             # ลองหาคะแนนจาก text
-            if 'score' in response.lower():
-                try:
-                    import re
-                    score_match = re.search(r'score["\s:]+(\d+)', response, re.IGNORECASE)
-                    if score_match:
-                        score = min(max_score, int(score_match.group(1)))
-                except:
-                    pass
+            import re
+            score_patterns = [
+                r'"score"\s*:\s*(\d+)',
+                r'score["\s:]+(\d+)',
+                r'คะแนน[:\s]*(\d+)',
+                r'(\d+)\s*/?100',
+                r'(\d+)\s*%'
+            ]
+            
+            for pattern in score_patterns:
+                match = re.search(pattern, response, re.IGNORECASE)
+                if match:
+                    try:
+                        score = min(max_score, int(match.group(1)))
+                        break
+                    except:
+                        continue
+
+            # ลองหา is_correct
+            if any(word in response.lower() for word in ['true', 'ถูกต้อง', 'correct']):
+                is_correct = True
 
             return {
                 'score': score,
@@ -267,3 +321,56 @@ def create_exam_grader() -> ExamGrader:
     rag_engine = RAGEngine()
     rag_engine.load_knowledge_base()
     return ExamGrader(rag_engine)
+
+
+def main():
+    """Test function for standalone usage"""
+    print("🧪 Testing Exam Grader...")
+    
+    try:
+        # Test 1: Initialize exam grader
+        from src.vector_store import VectorStoreManager
+        
+        vector_store = VectorStoreManager()
+        rag_engine = RAGEngine(vector_store_manager=vector_store)
+        grader = ExamGrader(rag_engine)
+        print("✓ Exam grader initialized")
+        
+        # Test 2: Test individual answer grading
+        test_case = {
+            'question': 'ระบบควบคุมแบบวงเปิดคืออะไร',
+            'student_answer': 'เป็นระบบที่ไม่มี feedback',
+            'correct_answer': 'ระบบที่ไม่มีการป้อนกลับและไม่สามารถแก้ไขข้อผิดพลาดได้'
+        }
+        
+        print("\n--- Testing Individual Answer Grading ---")
+        print(f"คำถาม: {test_case['question']}")
+        print(f"คำตอบนักศึกษา: {test_case['student_answer']}")
+        
+        result = grader.grade_answer(**test_case)
+        print(f"✓ คะแนน: {result['score']}/100")
+        print(f"✓ ถูกต้อง: {result['is_correct']}")
+        print(f"✓ Feedback: {result['feedback'][:100]}...")
+        
+        # Test 3: Test JSON parsing with various formats
+        print("\n--- Testing JSON Parsing ---")
+        test_responses = [
+            '{"score": 85, "is_correct": true, "feedback": "ดี"}',
+            'คะแนน: 75 ถูกต้อง: false',
+            'Some text before {"score": 90} and after',
+        ]
+        
+        for i, response in enumerate(test_responses, 1):
+            parsed = grader._parse_grading_response(response, 100)
+            print(f"✓ Test {i}: Score = {parsed['score']}")
+        
+        print("\n✅ Exam Grader Tests Completed!")
+        
+    except Exception as e:
+        print(f"❌ Error in exam grader test: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()
