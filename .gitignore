@@ -39,8 +39,11 @@ data/vector_db/
 
 # Results
 results/
-*.json
+results*.json
 *_report.txt
+
+# Allow example files
+!examples/*.json
 
 # Environment Variables
 .env
