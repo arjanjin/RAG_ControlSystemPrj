@@ -1,0 +1,27 @@
+[
+  {
+    "id": "doc1",
+    "content": "The examination control system manages all aspects of academic examinations including scheduling, student registration, paper distribution, and result processing.",
+    "title": "System Overview"
+  },
+  {
+    "id": "doc2",
+    "content": "Examination scheduling requires coordination between departments, faculty availability, and room capacity. The system automatically resolves conflicts and optimizes resource allocation.",
+    "title": "Exam Scheduling"
+  },
+  {
+    "id": "doc3",
+    "content": "Students can register for examinations through the online portal within the designated registration period. Late registration may incur additional fees.",
+    "title": "Student Registration"
+  },
+  {
+    "id": "doc4",
+    "content": "Examination papers are prepared by faculty members and must be submitted to the examination office at least two weeks before the exam date. Papers are stored securely.",
+    "title": "Paper Management"
+  },
+  {
+    "id": "doc5",
+    "content": "Results are processed within 10 working days after the examination. Students can view their results online and request rechecking if needed.",
+    "title": "Results Processing"
+  }
+]
